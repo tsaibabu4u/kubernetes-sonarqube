@@ -69,15 +69,21 @@ In order to persist changes within SonarQube, a persistent volume such as Postgr
 ---
 #### Install and run SonarQube locally
 
-#####  Install Sonar scanner and Minikube (Kubernetes cluster)
-1. `brew install sonar-scanner`
-2. `brew install minikube`
+##### Install Docker Desktop and configure Kubernetes
+1. Follow the instructions here [Docker Desktop](https://docs.docker.com/docker-for-mac/install/) to install Docker desktop
+2. Once Docker Desktop is installed, in your menu bar, click on the Docker icon
+    1. Open `Preferences`
+    2. Go to the `Advanced` tab
+    3. Drag the `Memory` slider to `4.0 GiB`
+    4. Go to the `Kubernetes` tab
+    5. Click the checkbox `Enable Kubernetes`
+    6. Click `Apply` and wait for Docker and Kubernetes to restart
+3. Ensure that the `docker-desktop` Context is set 
+    1. Click on Docker icon in menu bar
+    2. Click on `docker-desktop` in the `Kubernetes` section
 
-#####  Configure Minikube to support Sonar server and start cluster (takes a few minutes)
-1. `minikube config set memory 4096`
-2. `minikube config set cpus 2`
-3. `minikube config set vm-driver hyperkit`
-4. `minikube start`
+#####  Install Sonar scanner
+1. `brew install sonar-scanner`
 
 #####  Deploy your instance of SonarQube (will take a few minutes for pods to fully warm up and load SonarQube)
 1. `kubectl create secret generic postgres-pwd --from-literal=password={some made up password}`
@@ -88,18 +94,16 @@ In order to persist changes within SonarQube, a persistent volume such as Postgr
 6. `kubectl create -f sonarqube-service.yml`
 7. `kubectl create -f sonar-postgres-service.yml`
 
-##### Once all the pods are up and running, view your SonarQube instance (this will open a new browser tab with SonarQube)
-1. `minikube service sonar`
+##### Access your local SonarQube
+1. Find the `nodePort` of your `sonar` service
+    1. `kubectl get service sonar --output yaml`
+    2. Copy the number next to `nodePort` IE: `31564`
+2. Open a new Chrome/Firefox tab/browser
+    1. Go to `localhost:{nodePort you just copied}`
 
 ##### To delete the Kubernetes deployment is as follows
 1. `kubectl delete deployment sonar-postgres`
 2. `kubectl delete deployment sonarqube`
-
-#####  To stop Minikube cluster
-1. `minikube stop`
-
-#####  To delete the Minikube cluster
-1. `minikube delete`
 
 ---
 #### Perform static analysis
@@ -111,7 +115,7 @@ looking for this file when performing static analysis.
 2. Paste the following into the newly created `sonar-project.properties` file:
 ```
 sonar.projectKey={name of project}
-sonar.host.url=http://192.168.##.##:##### (url from minikube service sonar command)
+sonar.host.url=http://localhost:##### (nodePort of sonar service)
 sonar.login=${env.SONAR_TOKEN}
 sonar.java.binaries=build/classes
 sonar.sources=src/main/java
@@ -120,14 +124,14 @@ sonar.sources=src/main/java
 An example config would look like the following
 ```
 sonar.projectKey=notificationemailproc
-sonar.host.url=http://192.168.64.9:31828
+sonar.host.url=http://localhost:31828
 sonar.login=${env.SONAR_TOKEN}
 sonar.java.binaries=build/classes
 sonar.sources=src/main/java
 ```
 
 3. Create and copy a new SonarQube token by going to the SonarQube instance in the browser and navigating to 
-My Account -> Security tab -> Enter Token Name -> Generate -> Copy token generated
+My Account -> Security tab -> Enter Any Token Name You Want -> Generate -> Copy token generated
 
 4. In your .bashrc or .zshrc file, add the following line
 `export SONAR_TOKEN={SonarQube token that was just copied}`
