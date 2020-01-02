@@ -1,14 +1,11 @@
 This project will allow you to create a local persisted SonarQube instance that acts as your own personal sandbox
-for performing static analysis. You deploy this onto your local Kubernetes cluster (via Minikube) where you would
+for performing static analysis. You deploy this onto your local Kubernetes cluster where you would
 expose your service.
 
 **Installed will be the latest LTS SonarQube 7.9.1-community version.**
 
 To learn more about the 7.9 LTS features of SonarQube, please refer to the following documents
 [7.9 LTS SonarQube Features](https://www.sonarqube.org/sonarqube-7-9-lts/)
-
-To learn more about Minikube and/or Kubernetes, please refer to the following document
-[Minikube](https://kubernetes.io/docs/setup/learning-environment/minikube/)
 
 ---
 #### Explanation of each Kubernetes config file
