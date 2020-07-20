@@ -1,3 +1,4 @@
+#https://gitlab.com/afireinside/kubernetes-sonarqube
 This project will allow you to create a local persisted SonarQube instance that acts as your own personal sandbox
 for performing static analysis. You deploy this onto your local Kubernetes cluster where you would
 expose your service.
